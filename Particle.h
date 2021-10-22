@@ -21,7 +21,7 @@ public:
   double GetMass() const;
   double GetCharge() const;
   double GetEnergy() const;
-  double InvMass(Particle &p);
+  double InvMass(Particle &p) const;
   void SetIndex(int indexIn);
   void SetIndex(std::string name);
   void SetP(double pX, double pY, double pZ);
