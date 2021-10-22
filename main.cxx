@@ -5,8 +5,8 @@
 #include "TH1F.h"
 #include "TROOT.h"
 #include "TRandom.h"
-#include "TStyle.h"
 #include "TString.h"
+#include "TStyle.h"
 
 R__LOAD_LIBRARY(ParticleType_cxx.so)
 R__LOAD_LIBRARY(ResonanceType_cxx.so)
@@ -48,18 +48,18 @@ int main() {
   TH1F *hInvMassConc =
       new TH1F("hInvMassConc",
                "Invariant Mass distribution (concordant charge)", 1000, 0., 7.);
-  TH1F *hInvMass_PiNeg_KPos =
-      new TH1F("hInvMass_PiNeg_KPos",
-               "Invariant Mass distribution for #pi - and K+", 1000, 0., 7.);
-  TH1F *hInvMass_PiPos_KNeg =
-      new TH1F("hInvMass_PiPos_KNeg",
-               "Invariant Mass distribution for #pi + and K-", 1000, 0., 7.);
-  TH1F *hInvMass_PiNeg_KNeg =
-      new TH1F("hInvMass_PiNeg_KNeg",
-               "Invariant Mass distribution for #pi - and K-", 1000, 0., 7.);
-  TH1F *hInvMass_PiPos_KPos =
-      new TH1F("hInvMass_PiPos_KPos",
-               "Invariant Mass distribution for #pi + and K+", 1000, 0., 7.);
+  TH1F *hInvMass_PiNeg_KPos = new TH1F(
+      "hInvMass_PiNeg_KPos",
+      "Invariant Mass distribution for #pi^{-} and K^{+}", 1000, 0., 7.);
+  TH1F *hInvMass_PiPos_KNeg = new TH1F(
+      "hInvMass_PiPos_KNeg",
+      "Invariant Mass distribution for #pi^{+} and K^{-}", 1000, 0., 7.);
+  TH1F *hInvMass_PiNeg_KNeg = new TH1F(
+      "hInvMass_PiNeg_KNeg",
+      "Invariant Mass distribution for #pi^{-} and K^{-}", 1000, 0., 7.);
+  TH1F *hInvMass_PiPos_KPos = new TH1F(
+      "hInvMass_PiPos_KPos",
+      "Invariant Mass distribution for #pi^{+} and K^{+}", 1000, 0., 7.);
   TH1F *hInvMassDecay = new TH1F(
       "hInvMassDecay", "Invariant Mass distribution for K* decay products",
       1000, 0., 2.);
@@ -182,9 +182,16 @@ int main() {
                               "Energy (GeV)",
                               "Invariant Mass (GeV/c^{2})"};
 
+  const TString titleY = "Occurrencies";
+
+  const TString types[7] = {"#pi^{+}", "#pi^{-}", "K^{+}", "K^{-}",
+                            "P^{+}",   "P^{-}",   "K*"};
+
   TFile *file = new TFile("generation.root", "RECREATE");
 
-  const TString titleY = "Occurrencies";
+  for (int i = 1; i < 8; ++i) {
+    hParticleType->GetXaxis()->SetBinLabel(i, types[i - 1]);
+  }
 
   for (int i = 0; i < 14; ++i) {
     histos[i]->GetYaxis()->SetTitleOffset(1.3);
