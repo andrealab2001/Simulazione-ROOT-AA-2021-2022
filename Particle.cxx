@@ -12,12 +12,11 @@ int Particle::FindParticle(std::string particleName) {
       return i;
   }
   std::cout << "No match found for " << particleName << '\n';
-  std::cout << "Returned failure index " << fFindFailure << '\n';
+  std::cout << "Returned failure index " << fFindFailure << "\n\n";
   return fFindFailure;
 }
 
-Particle::Particle(std::string name, double pX, double pY,
-                   double Pz)
+Particle::Particle(std::string name, double pX, double pY, double Pz)
     : fPx{pX}, fPy{pY}, fPz{Pz} {
   fIndex = FindParticle(name);
 }
@@ -69,7 +68,7 @@ double Particle::GetEnergy() const {
   return energy;
 }
 
-double Particle::InvMass(Particle &p) {
+double Particle::InvMass(Particle &p) const {
   double pX = fPx + p.GetPx(), pY = fPy + p.GetPy(), pZ = fPz + p.GetPz();
   double invMass =
       sqrt((GetEnergy() + p.GetEnergy()) * (GetEnergy() + p.GetEnergy()) -
@@ -99,7 +98,8 @@ void Particle::SetP(double pX, double pY, double pZ) {
 void Particle::Print() const {
   std::cout << "Index: " << fIndex << '\n';
   std::cout << "Momentum components: "
-            << "( " << fPx << ',' << fPy << ',' << fPz << " )" << '\n';
+            << "( " << fPx << ',' << fPy << ',' << fPz << " )"
+            << "\n\n";
 }
 
 int Particle::Decay2body(Particle &dau1, Particle &dau2) const {

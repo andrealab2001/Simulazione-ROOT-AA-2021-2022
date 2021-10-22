@@ -15,5 +15,5 @@ void ParticleType::Print() const {
   std::cout << "Particle's parameters:" << '\n';
   std::cout << "Name: " << fName << '\n';
   std::cout << "Mass: " << fMass << '\n';
-  std::cout << "Charge: " << fCharge << '\n';
+  std::cout << "Charge: " << fCharge << "\n\n";
 }

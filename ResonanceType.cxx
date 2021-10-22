@@ -8,5 +8,5 @@ double ResonanceType::GetWidth() const { return fWidth; }
 
 void ResonanceType::Print() const {
   ParticleType::Print();
-  std::cout << "Resonance width: " << fWidth << '\n';
+  std::cout << "Resonance width: " << fWidth << "\n\n";
 }
