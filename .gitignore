@@ -1,0 +1,6 @@
+*.so
+*.out
+*.root
+*.pcm
+*.d
+*.o
