@@ -36,30 +36,27 @@ int main() {
   TH1F *hPolarAngle =
       new TH1F("hPolarAngle", "Polar Angle distribution", 1000, 0., M_PI);
   TH1F *hMomentum =
-      new TH1F("hMomentum", "Momentum distribution (module)", 1000, 0., 4.);
-  TH1F *hMomTrasv =
-      new TH1F("hMomTrasv", "Trasverse momentum (module)", 1000, 0., 1.4);
-  TH1F *hEnergy = new TH1F("hEnergy", "Particles energy", 1000, 0., 4.);
+      new TH1F("hMomentum", "Momentum distribution (intensity)", 1000, 0., 4.);
+  TH1F *hMomTransv =
+      new TH1F("hMomTransv", "Transversal momentum distribution (intensity)",
+               1000, 0., 1.4);
+  TH1F *hEnergy = new TH1F("hEnergy", "Energy distribution", 1000, 0., 4.);
   TH1F *hInvMassTot =
-      new TH1F("hInvMass", "Invariant Mass distribution", 1000, 0., 7.);
+      new TH1F("hInvMass", "Invariant Mass distribution (total)", 1000, 0., 7.);
   TH1F *hInvMassDisc =
       new TH1F("hInvMassDisc",
                "Invariant Mass distribution (discordant charge)", 1000, 0., 7.);
   TH1F *hInvMassConc =
       new TH1F("hInvMassConc",
                "Invariant Mass distribution (concordant charge)", 1000, 0., 7.);
-  TH1F *hInvMass_PiNeg_KPos = new TH1F(
-      "hInvMass_PiNeg_KPos",
-      "Invariant Mass distribution for #pi^{-} and K^{+}", 1000, 0., 7.);
-  TH1F *hInvMass_PiPos_KNeg = new TH1F(
-      "hInvMass_PiPos_KNeg",
-      "Invariant Mass distribution for #pi^{+} and K^{-}", 1000, 0., 7.);
-  TH1F *hInvMass_PiNeg_KNeg = new TH1F(
-      "hInvMass_PiNeg_KNeg",
-      "Invariant Mass distribution for #pi^{-} and K^{-}", 1000, 0., 7.);
-  TH1F *hInvMass_PiPos_KPos = new TH1F(
-      "hInvMass_PiPos_KPos",
-      "Invariant Mass distribution for #pi^{+} and K^{+}", 1000, 0., 7.);
+  TH1F *hInvMass_Pi_KConc = new TH1F(
+      "hInvMass_Pi_KConc",
+      "Invariant Mass distribution for #pi and K with concordant charge", 1000,
+      0., 7.);
+  TH1F *hInvMass_Pi_KDisc = new TH1F(
+      "hInvMass_Pi_KDisc",
+      "Invariant Mass distribution for #pi and K with discordant charge", 1000,
+      0., 7.);
   TH1F *hInvMassDecay = new TH1F(
       "hInvMassDecay", "Invariant Mass distribution for K* decay products",
       1000, 0., 2.);
@@ -78,7 +75,7 @@ int main() {
       double pX = p * sin(theta) * cos(phi);
       double pY = p * sin(theta) * sin(phi);
       double pZ = p * cos(theta);
-      hMomTrasv->Fill(sqrt(pX * pX + pY * pY));
+      hMomTransv->Fill(sqrt(pX * pX + pY * pY));
       particles[j].SetP(pX, pY, pZ);
       double prob = gRandom->Uniform(0., 1.);
       double type = gRandom->Uniform(0., 1.);
@@ -139,21 +136,19 @@ int main() {
         if (particles[r].GetCharge() * particles[s].GetCharge() > 0)
           hInvMassConc->Fill(particles[r].InvMass(particles[s]));
 
-        if ((particles[r].GetIndex() == 0 && particles[s].GetIndex() == 3) ||
-            (particles[r].GetIndex() == 3 && particles[s].GetIndex() == 0))
-          hInvMass_PiPos_KNeg->Fill(particles[r].InvMass(particles[s]));
+        int r_index = particles[r].GetIndex();
+        int s_index = particles[s].GetIndex();
 
-        if ((particles[r].GetIndex() == 1 && particles[s].GetIndex() == 2) ||
-            (particles[r].GetIndex() == 2 && particles[s].GetIndex() == 1))
-          hInvMass_PiNeg_KPos->Fill(particles[r].InvMass(particles[s]));
+        if (((r_index == 0 || r_index == 1) &&
+             (s_index == 2 || s_index == 3)) ||
+            ((r_index == 2 || r_index == 3) &&
+             (s_index == 0 || s_index == 1))) {
 
-        if ((particles[r].GetIndex() == 1 && particles[s].GetIndex() == 3) ||
-            (particles[r].GetIndex() == 3 && particles[s].GetIndex() == 1))
-          hInvMass_PiNeg_KNeg->Fill(particles[r].InvMass(particles[s]));
-
-        if ((particles[r].GetIndex() == 0 && particles[s].GetIndex() == 2) ||
-            (particles[r].GetIndex() == 2 && particles[s].GetIndex() == 0))
-          hInvMass_PiPos_KPos->Fill(particles[r].InvMass(particles[s]));
+          if (particles[r].GetCharge() * particles[s].GetCharge() == 1)
+            hInvMass_Pi_KConc->Fill(particles[r].InvMass(particles[s]));
+          else
+            hInvMass_Pi_KDisc->Fill(particles[r].InvMass(particles[s]));
+        }
       }
     }
 
@@ -167,18 +162,16 @@ int main() {
 
   // cosmetica e scrittura su file
 
-  TH1F *histos[14] = {
-      hParticleType,       hAzimuthalAngle,     hPolarAngle,
-      hMomentum,           hMomTrasv,           hEnergy,
-      hInvMassTot,         hInvMassConc,        hInvMassDisc,
-      hInvMass_PiNeg_KNeg, hInvMass_PiNeg_KPos, hInvMass_PiPos_KNeg,
-      hInvMass_PiPos_KPos, hInvMassDecay};
+  TH1F *histos[12] = {hParticleType,     hAzimuthalAngle,   hPolarAngle,
+                      hMomentum,         hMomTransv,        hEnergy,
+                      hInvMassTot,       hInvMassConc,      hInvMassDisc,
+                      hInvMass_Pi_KConc, hInvMass_Pi_KDisc, hInvMassDecay};
 
   const TString titlesX[7] = {"Particle Types",
                               "Azimuthal Angle (rad)",
                               "Polar Angle (rad)",
-                              "Momentum module (GeV/c)",
-                              "Trasverse Momentum module (GeV/c)",
+                              "Momentum intensity (GeV/c)",
+                              "Transverse Momentum intensity (GeV/c)",
                               "Energy (GeV)",
                               "Invariant Mass (GeV/c^{2})"};
 
@@ -193,8 +186,8 @@ int main() {
     hParticleType->GetXaxis()->SetBinLabel(i, types[i - 1]);
   }
 
-  for (int i = 0; i < 14; ++i) {
-    histos[i]->GetYaxis()->SetTitleOffset(1.3);
+  for (int i = 0; i < 12; ++i) {
+    histos[i]->GetYaxis()->SetTitleOffset(1.2);
     histos[i]->GetYaxis()->SetTitle(titleY);
     if (i < 6)
       histos[i]->GetXaxis()->SetTitle(titlesX[i]);
