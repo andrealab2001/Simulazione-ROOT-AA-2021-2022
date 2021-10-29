@@ -15,7 +15,7 @@ R__LOAD_LIBRARY(Particle_cxx.so)
 void setStyle() {
   gROOT->SetStyle("Plain");
   gStyle->SetPalette(57);
-  gStyle->SetOptStat(1110);
+  gStyle->SetOptStat(111110);
 }
 
 int main() {
@@ -32,34 +32,40 @@ int main() {
 
   TH1F *hParticleType = new TH1F("hParticleType", "Particle Types", 7, 0, 7);
   TH1F *hAzimuthalAngle = new TH1F(
-      "hAzimuthalAngle", "Azimuthal Angle distribution", 1000, 0., 2 * M_PI);
+      "hAzimuthalAngle", "Azimuthal Angle distribution", 500, 0., 2 * M_PI);
   TH1F *hPolarAngle =
-      new TH1F("hPolarAngle", "Polar Angle distribution", 1000, 0., M_PI);
+      new TH1F("hPolarAngle", "Polar Angle distribution", 500, 0., M_PI);
   TH1F *hMomentum =
-      new TH1F("hMomentum", "Momentum distribution (intensity)", 1000, 0., 4.);
+      new TH1F("hMomentum", "Momentum distribution (intensity)", 1000, 0., 6.);
   TH1F *hMomTransv =
       new TH1F("hMomTransv", "Transversal momentum distribution (intensity)",
-               1000, 0., 1.4);
-  TH1F *hEnergy = new TH1F("hEnergy", "Energy distribution", 1000, 0., 4.);
+               1000, 0., 2.);
+  TH1F *hEnergy = new TH1F("hEnergy", "Energy distribution", 1000, 0., 6.);
   TH1F *hInvMassTot =
       new TH1F("hInvMass", "Invariant Mass distribution (total)", 1000, 0., 7.);
+  hInvMassTot->Sumw2();
   TH1F *hInvMassDisc =
       new TH1F("hInvMassDisc",
                "Invariant Mass distribution (discordant charge)", 1000, 0., 7.);
+  hInvMassDisc->Sumw2();
   TH1F *hInvMassConc =
       new TH1F("hInvMassConc",
                "Invariant Mass distribution (concordant charge)", 1000, 0., 7.);
+  hInvMassConc->Sumw2();
   TH1F *hInvMass_Pi_KConc = new TH1F(
       "hInvMass_Pi_KConc",
       "Invariant Mass distribution for #pi and K with concordant charge", 1000,
       0., 7.);
+  hInvMass_Pi_KConc->Sumw2();
   TH1F *hInvMass_Pi_KDisc = new TH1F(
       "hInvMass_Pi_KDisc",
       "Invariant Mass distribution for #pi and K with discordant charge", 1000,
       0., 7.);
+  hInvMass_Pi_KDisc->Sumw2();
   TH1F *hInvMassDecay = new TH1F(
       "hInvMassDecay", "Invariant Mass distribution for K* decay products",
       1000, 0., 2.);
+  hInvMassDecay->Sumw2();
   int const x = 20;
   Particle particles[100 + x];
 
@@ -126,7 +132,14 @@ int main() {
     // ciclo su tutte le particelle
 
     for (int r = 0; r < 100 + k + 1; ++r) {
+
+      if (particles[r].GetIndex() == 6)
+        continue;
+
       for (int s = r + 1; s < 100 + k + 1; ++s) {
+
+        if (particles[s].GetIndex() == 6)
+          continue;
 
         hInvMassTot->Fill(particles[r].InvMass(particles[s]));
 
